@@ -1,0 +1,5 @@
+{
+  // The build leaves out tests; tsconfig.json (lint) still type-checks them.
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+}

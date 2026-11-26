@@ -1,0 +1,68 @@
+{
+  "name": "@bopsy/skills",
+  "version": "0.1.0",
+  "description": "Build, check and pack skill packages for Bopsy agents that also run as Agent Skills in Claude, Codex and ChatGPT.",
+  "license": "MIT",
+  "author": "Elevaite",
+  "homepage": "https://github.com/Elevaite-AI/bopsy-skills#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elevaite-AI/bopsy-skills.git",
+    "directory": "sdk"
+  },
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "bopsy",
+    "claude",
+    "codex",
+    "chatgpt"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "bopsy-skill": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "compiled": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "jszip": "^3.10.2",
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "typescript": "~6.0.2",
+    "vitest": "^4.1.12"
+  }
+}
