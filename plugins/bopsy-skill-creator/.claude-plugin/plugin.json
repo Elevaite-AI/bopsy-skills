@@ -1,0 +1,10 @@
+{
+  "name": "bopsy-skill-creator",
+  "version": "0.2.0",
+  "description": "Builds a skill package with you that installs on Bopsy agents and runs in Claude, Codex and ChatGPT.",
+  "author": { "name": "Elevaite", "url": "https://github.com/Elevaite-AI" },
+  "homepage": "https://github.com/Elevaite-AI/bopsy-skills#readme",
+  "repository": "https://github.com/Elevaite-AI/bopsy-skills",
+  "license": "MIT",
+  "keywords": ["bopsy", "agent-skills", "skills"]
+}

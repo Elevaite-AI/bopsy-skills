@@ -166,8 +166,9 @@ an app they can connect.
 Fix these before you upload; `check` reports the same fixed rules.
 
 **Blocks the install (high):** downloading a script and piping it to a shell; running code hidden in an encoded
-string; reverse shells; `sudo`; reading credential files (`~/.ssh`, `~/.aws/credentials`, `.netrc`…); touching the
-agent sandbox under `~/.aios/` (other than reading settings); compiled binaries or executables that aren't scripts.
+string; reverse shells; `sudo`; reading credential files (SSH keys, cloud CLI credentials, netrc, Docker or
+Kubernetes config…); touching the agent's own sandbox files (other than reading settings); compiled binaries or
+executables that aren't scripts.
 
 **Needs a reason (medium/low):** hosts the scripts call, files they write outside their folder, packages they install.
 Say in the SKILL.md why each host is called. Install dependencies into the skill's own folder
@@ -234,6 +235,7 @@ For a model building a skill with someone. Ask one thing at a time and keep goin
 | `check [dir]` | The checks Bopsy runs on upload plus the `bopsy.json` rules, with file and line. Exits 1 on any error. |
 | `pack [dir] [--out <path>] [--for <target>]` | Check, then write the package next to its folder: a `.zip` for Bopsy, or a `<slug>-<target>` folder for another platform. Notes say what a platform leaves out. |
 | `guide` | Print this file (what Bopsy's skill creator and the Copy prompt read). |
+| `prompt [--for <host>]` | Print a prompt that builds a package with you, to paste into a chat: `claude-code` (default), `codex`, `claude-ai` or `chatgpt`. |
 
 The same rules are a library: `import { checkPackage, readManifest } from '@bopsy/skills'`.
 

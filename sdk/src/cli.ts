@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { CREATOR_HOSTS, creatorPrompt, isCreatorHost } from './creator.js'
 import { checkPackage, findCatalog, loadCatalogIds, repoRoot, type CheckResult } from './check.js'
 import { PackageError, readDir } from './files.js'
 import { inspectPackage } from './package.js'
@@ -27,7 +28,9 @@ const USAGE = `Usage: bopsy-skill <command>   (npx @bopsy/skills <command>; pnpm
   pack [dir] [--out <path>] [--for <target>]
                                      check, then write the package's .zip, or for another platform:
                                      --for ${TARGETS.join(' | ')}
-  guide                              print the guide to building a package (for people and models)`
+  guide                              print the guide to building a package (for people and models)
+  prompt [--for <host>]              print a prompt that builds a package with you in a chat:
+                                     --for ${CREATOR_HOSTS.join(' | ')}`
 
 // A package's first skill is named after it, so the slug follows the Agent Skills name rule.
 const NEW_SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
@@ -37,6 +40,7 @@ const FLAGS: Record<string, Record<string, 'value' | 'switch'>> = {
   check: { catalog: 'value', all: 'switch' },
   pack: { catalog: 'value', out: 'value', for: 'value' },
   guide: {},
+  prompt: { for: 'value' },
 }
 
 /** Positional arguments and the command's known flags; anything else is refused, never quietly skipped. */
@@ -75,6 +79,13 @@ export async function main(argv: string[], io: Io): Promise<number> {
     const str = (k: string) => (typeof flags.get(k) === 'string' ? (flags.get(k) as string) : undefined)
     if (cmd === 'guide') {
       io.out((await readFile(readmePath(), 'utf8')).trimEnd())
+      return 0
+    }
+
+    if (cmd === 'prompt') {
+      const host = str('for') ?? 'claude-code'
+      if (!isCreatorHost(host)) { io.err(`--for takes one of ${CREATOR_HOSTS.join(', ')}.`); return 2 }
+      io.out(creatorPrompt(host, await readFile(readmePath(), 'utf8')).trimEnd())
       return 0
     }
 

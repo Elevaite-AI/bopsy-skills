@@ -27,6 +27,8 @@ export interface TargetOutput { path: string; bytes: Uint8Array; exec?: boolean 
 
 /** Same date on every entry, so the same files always pack to the same bytes. */
 const FIXED_DATE = new Date(Date.UTC(1980, 0, 1))
+/** claude.ai's limit for a skill description on upload (the Agent Skills spec allows 1024). */
+const UPLOAD_DESCRIPTION_MAX = 200
 /** Files every target may leave out without saying so: they configure the package, not a skill. */
 const PACKAGE_ONLY = new Set([MANIFEST_FILE, 'LICENSE', 'LICENSE.md', 'LICENSE.txt'])
 
@@ -83,5 +85,8 @@ export async function buildTarget(target: Target, files: SourceFile[], info: Tar
   // claude-ai and chatgpt: one ZIP per skill, holding one folder with SKILL.md at its root.
   const outputs: TargetOutput[] = []
   for (const s of bySkill) outputs.push({ path: `${s.skill.name}.zip`, bytes: await shareableZip(s.files) })
-  return { outputs, notes }
+  const long = info.skills
+    .filter((s) => s.description.length > UPLOAD_DESCRIPTION_MAX)
+    .map((s) => `The description of the skill "${s.name}" is ${s.description.length} characters long: claude.ai takes up to ${UPLOAD_DESCRIPTION_MAX}, so shorten it before uploading.`)
+  return { outputs, notes: [...notes, ...long] }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@bopsy/skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Build, check and pack skill packages for Bopsy agents that also run as Agent Skills in Claude, Codex and ChatGPT.",
   "license": "MIT",
   "author": "Elevaite",

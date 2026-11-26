@@ -1,0 +1,13 @@
+{
+  "name": "bopsy-skills",
+  "owner": { "name": "Elevaite", "url": "https://github.com/Elevaite-AI" },
+  "description": "Build skill packages for Bopsy agents that also run in Claude, Codex and ChatGPT.",
+  "plugins": [
+    {
+      "name": "bopsy-skill-creator",
+      "source": "./plugins/bopsy-skill-creator",
+      "description": "Builds a skill package with you that installs on Bopsy agents and runs in Claude, Codex and ChatGPT.",
+      "category": "development"
+    }
+  ]
+}
