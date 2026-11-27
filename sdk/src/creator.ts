@@ -1,7 +1,7 @@
 /**
  * The skill creator, made from the guide (this package's README) so its instructions can't drift from it: the
  * `bopsy-skill-creator` skill (Claude Code / Codex plugin, claude.ai and ChatGPT upload) and the paste-in prompts
- * (`bopsy-skill prompt`, Bopsy's Build a skill → Copy prompt).
+ * (`bopsy-skill prompt`, Bopsy's Build a skill using external agents → Copy prompt).
  */
 
 export const CREATOR_SKILL = 'bopsy-skill-creator'
@@ -12,6 +12,25 @@ export const CREATOR_DESCRIPTION =
 export type CreatorHost = 'claude-code' | 'codex' | 'claude-ai' | 'chatgpt'
 export const CREATOR_HOSTS: readonly CreatorHost[] = ['claude-code', 'codex', 'claude-ai', 'chatgpt']
 export const isCreatorHost = (v: string): v is CreatorHost => (CREATOR_HOSTS as readonly string[]).includes(v)
+
+/** Where the creator is published: the public repo, its Claude Code / Codex marketplace and the ZIP it serves. */
+export const CREATOR_REPO = 'Elevaite-AI/bopsy-skills'
+const MARKETPLACE = 'bopsy-skills'
+const ZIP_URL = `https://github.com/${CREATOR_REPO}/raw/main/downloads/${CREATOR_SKILL}.zip`
+
+/** How to put the creator on each host: commands to run, or a ZIP to upload. Bopsy's Build a skill using external agents dialog shows these. */
+export const CREATOR_SETUP: Readonly<Record<CreatorHost, { commands: readonly string[]; download: string | null }>> = {
+  'claude-code': {
+    commands: [`/plugin marketplace add ${CREATOR_REPO}`, `/plugin install ${CREATOR_SKILL}@${MARKETPLACE}`],
+    download: null,
+  },
+  codex: {
+    commands: [`codex plugin marketplace add ${CREATOR_REPO}`, `codex plugin add ${CREATOR_SKILL}@${MARKETPLACE}`],
+    download: null,
+  },
+  'claude-ai': { commands: [], download: ZIP_URL },
+  chatgpt: { commands: [], download: ZIP_URL },
+}
 
 const STEPS = 'Building a skill, step by step'
 

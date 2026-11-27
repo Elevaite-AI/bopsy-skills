@@ -1,8 +1,9 @@
 import { existsSync } from 'node:fs'
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, stat, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, resolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { pathToFileURL } from 'node:url'
 import { CREATOR_HOSTS, creatorPrompt, isCreatorHost } from './creator.js'
+import { readGuide } from './guide.js'
 import { checkPackage, findCatalog, loadCatalogIds, repoRoot, type CheckResult } from './check.js'
 import { PackageError, readDir } from './files.js'
 import { inspectPackage } from './package.js'
@@ -16,8 +17,7 @@ import { skillTemplate } from './templates.js'
  * processes).
  */
 
-/** The package's README, at its root: one folder up from both src/ and dist/. */
-export const readmePath = (): string => fileURLToPath(new URL('../README.md', import.meta.url))
+export { readmePath } from './guide.js'
 
 export interface Io { cwd: string; out: (s: string) => void; err: (s: string) => void }
 
@@ -78,14 +78,14 @@ export async function main(argv: string[], io: Io): Promise<number> {
     const { positional, flags } = parseArgs(cmd, rest)
     const str = (k: string) => (typeof flags.get(k) === 'string' ? (flags.get(k) as string) : undefined)
     if (cmd === 'guide') {
-      io.out((await readFile(readmePath(), 'utf8')).trimEnd())
+      io.out((await readGuide()).trimEnd())
       return 0
     }
 
     if (cmd === 'prompt') {
       const host = str('for') ?? 'claude-code'
       if (!isCreatorHost(host)) { io.err(`--for takes one of ${CREATOR_HOSTS.join(', ')}.`); return 2 }
-      io.out(creatorPrompt(host, await readFile(readmePath(), 'utf8')).trimEnd())
+      io.out(creatorPrompt(host, await readGuide()).trimEnd())
       return 0
     }
 
